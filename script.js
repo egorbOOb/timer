@@ -22,23 +22,47 @@ window.addEventListener('DOMContentLoaded', function() {
     }
     
     let timer = getTimeRemaining();
+    let interval;
 
     function updateClock() {
         let timer = getTimeRemaining();
 
-            timerHours.textContent = timer.hours;
-            timerMinutes.textContent = timer.minutes;
-            timerSeconds.textContent = timer.seconds;
+            if (String(timer.hours).length === 1) {
+                timerHours.textContent = `0${timer.hours}`;
+            } else {
+                timerHours.textContent = timer.hours;
+            }
+            
+            if (String(timer.minutes).length === 1) {
+                timerMinutes.textContent = `0${timer.minutes}`;
+            } else {
+                timerMinutes.textContent = timer.minutes;
+            }
 
+            if (String(timer.seconds).length === 1) {
+                timerSeconds.textContent = `0${timer.seconds}`;
+            } else {
+                timerSeconds.textContent = timer.seconds;
+            }
 
         if (!(timer.timeRemaining > 0)) {
             clearInterval(interval);
+            timerHours.textContent = '00';
+            timerMinutes.textContent = '00';
+            timerSeconds.textContent = '00';
         }
     
     }
+    
 
-    let interval = setInterval(updateClock, 1000);
+    if(timer.timeRemaining > 0) {
+        interval = setInterval(updateClock, 1000);
+    } else if(!(timer.timerRemaining > 0)) {
+        timerHours.textContent = '00';
+        timerMinutes.textContent = '00';
+        timerSeconds.textContent = '00';
+    }
 }
 
-    countTimer('4 july 2020');
+    countTimer('5 july 2020');
 });
