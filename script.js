@@ -68,19 +68,23 @@ window.addEventListener('DOMContentLoaded', function() {
 
     const toggleMenu = () => {
         const btnMenu = document.querySelector('.menu'),
-            menu = document.querySelector('menu'),
-            closeBtn = document.querySelector('.close-btn'),
-            menuItems = menu.querySelectorAll('ul>li');
+            menu = document.querySelector('menu');
 
         const handlerMenu = () => {
             menu.classList.toggle('active-menu');
         };
 
         btnMenu.addEventListener('click', handlerMenu);
-    
-        closeBtn.addEventListener('click', handlerMenu);
+        
+        menu.addEventListener('click', (event) => {
+            let target = event.target;
 
-        menuItems.forEach((item) => item.addEventListener('click', handlerMenu));
+            if (target.matches('a')) {
+                handlerMenu();
+            } else if (target.matches('a.close-btn')) {
+                handlerMenu();
+            }
+        })
     };
 
     //popup
@@ -161,7 +165,7 @@ window.addEventListener('DOMContentLoaded', function() {
         console.dir(service);
 
     const menu = document.querySelector('menu'),
-        menuItems = menu.querySelectorAll('ul>li');  
+        menuItems = menu.querySelectorAll('ul>li>a');  
 
     let elemPosition;
     let del;
@@ -169,7 +173,6 @@ window.addEventListener('DOMContentLoaded', function() {
     function doScroll() {
         let scrollCount = document.documentElement.scrollTop;
         scrollCount += 15;
-        console.log(scrollCount, elemPosition);
         if (scrollCount >= elemPosition) {
             cancelAnimationFrame(del);
         } else {
@@ -184,7 +187,6 @@ window.addEventListener('DOMContentLoaded', function() {
         setTimeout(() => document.documentElement.scrollTop = 0, 1);
         elemPosition = elem.offsetTop;
         doScroll();
-        console.log(elemPosition);
     };
 
     document.querySelector('img[src="images/scroll.svg"]').addEventListener('click', function() {
