@@ -67,24 +67,29 @@ window.addEventListener('DOMContentLoaded', function() {
     // Меню
 
     const toggleMenu = () => {
-        const btnMenu = document.querySelector('.menu'),
+        const body = document.body,
             menu = document.querySelector('menu');
 
+        console.log(body);
         const handlerMenu = () => {
             menu.classList.toggle('active-menu');
         };
-
-        btnMenu.addEventListener('click', handlerMenu);
         
-        menu.addEventListener('click', (event) => {
+        body.addEventListener('click', (event) => {
             let target = event.target;
 
-            if (target.matches('a')) {
+            if (target.matches('menu a')) {
                 handlerMenu();
+                return;
             } else if (target.matches('a.close-btn')) {
                 handlerMenu();
+                return;
+            } else if(target.closest('div.menu')) {
+                handlerMenu();
+            } else if (!target.closest('menu.active-menu') && menu.classList.contains('active-menu')) {
+                handlerMenu();
             }
-        })
+        });
     };
 
     //popup
@@ -155,12 +160,12 @@ window.addEventListener('DOMContentLoaded', function() {
     };
 
     // Scroll
-    const service = document.querySelector('#service-block'),
-        portfolio = document.querySelector('#portfolio'),
-        calc = document.querySelector('#calc'),
-        companies = document.querySelector('#companies'),
-        command = document.querySelector('#command'),
-        connect = document.querySelector('#connect');
+    const service = document.querySelector('.service'),
+        portfolio = document.querySelector('.portfolio'),
+        calc = document.querySelector('.calc'),
+        companies = document.querySelector('.companies'),
+        command = document.querySelector('.command'),
+        connect = document.querySelector('.connect');
 
         console.dir(service);
 
