@@ -355,6 +355,55 @@ window.addEventListener('DOMContentLoaded', function() {
 
     };
 
+    //switchPicture
+    let defaultSrc;
+    
+    const getOldImg = function(e) {
+        let target = e.target;
+        
+        if (target.matches('.command__photo')) {
+            console.log(target.getAttribute('src'));
+            target.src = defaultSrc;
+            console.log(target.src);
+        }
+    };
+    
+    const getNewImg = function(e) {
+        let target = e.target;
+
+        if (target.matches('.command__photo')) {
+            defaultSrc = target.src;
+            target.src = target.dataset.img;
+            console.log(target.src);
+        }
+    };
+
+    const switchImg = function() {
+        const row = document.querySelector('.command .row');
+
+        console.log(row);
+        row.addEventListener('mouseover', getNewImg);
+        row.addEventListener('mouseout', getOldImg);
+    };
+
+    //doValid
+    const validCalc = function() {
+        const calcBlock = document.querySelector('.calc-block');
+
+        const getValidValue = (e) => {
+            let target = e.target;
+
+            if(target.matches('.calc-block>input')) {
+                target.value = target.value.replace(/\D/, '');
+            }
+        } 
+
+        calcBlock.addEventListener('input', getValidValue);
+
+    }
+
+    validCalc();
+    switchImg();
     addDots();
     slider();
     tabs();
