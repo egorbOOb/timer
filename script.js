@@ -70,7 +70,6 @@ window.addEventListener('DOMContentLoaded', function() {
         const body = document.body,
             menu = document.querySelector('menu');
 
-        console.log(body);
         const handlerMenu = () => {
             menu.classList.toggle('active-menu');
         };
@@ -167,7 +166,6 @@ window.addEventListener('DOMContentLoaded', function() {
         command = document.querySelector('.command'),
         connect = document.querySelector('.connect');
 
-        console.dir(service);
 
     const menu = document.querySelector('menu'),
         menuItems = menu.querySelectorAll('ul>li>a');  
@@ -233,7 +231,7 @@ window.addEventListener('DOMContentLoaded', function() {
                 tab[i].classList.remove('active');    
             }
         }
-    }
+    };
     
         tabHeader.addEventListener('click', (event) => {
             let target = event.target;
@@ -381,7 +379,6 @@ window.addEventListener('DOMContentLoaded', function() {
     const switchImg = function() {
         const row = document.querySelector('.command .row');
 
-        console.log(row);
         row.addEventListener('mouseover', getNewImg);
         row.addEventListener('mouseout', getOldImg);
     };
@@ -396,7 +393,7 @@ window.addEventListener('DOMContentLoaded', function() {
             if(target.matches('.calc-block>input')) {
                 target.value = target.value.replace(/\D/, '');
             }
-        } 
+        };
 
         calcBlock.addEventListener('input', getValidValue);
 
@@ -445,8 +442,103 @@ window.addEventListener('DOMContentLoaded', function() {
                     countSum();
                 }
         });
-        }   
+        };
 
+        //send-ajax-form
+
+        //formValidator
+        const getValidForm = (form) => {
+            let validator = /^(\+7|8)(\d){10}$/;
+            return validator.test(form);
+        };
+
+        const replaceField = () => {
+            const messageField = document.querySelector('#form2-message');
+            console.log(messageField);
+            messageField.addEventListener('input', () => {
+                console.log(messageField);
+                messageField.value = messageField.value.replace(/\w/, '');
+            });
+        };
+
+        const sendForm = () => {
+            const errorMessage = 'что-то пошло не так',
+                loadMessage = 'Загрузка...',
+                successMessage = 'Спасибо! Мы скоро с вами свяжемся!';
+
+            let form;
+
+            const statusMessage = document.createElement('div');
+            statusMessage.style.cssText = 'font-size: 2rem; color: white';
+
+
+            document.body.addEventListener('submit', (event) => {
+                event.preventDefault();
+                let target = event.target;
+                
+                if (target.matches('#form1')) {
+                    form = document.getElementById('form1');
+                } else if (target.matches('#form2')) {
+                    form = document.getElementById('form2');
+                } else if (target.matches('#form3')) {
+                    form = document.getElementById('form3');
+                } else {
+                    return;
+                }
+
+                const validForm = form.querySelector('.form-phone');
+                validForm.removeAttribute('style');
+
+                if (!getValidForm(validForm.value)) {
+                    validForm.setAttribute('style', 'border: 1px solid red');
+                    return;
+                }
+
+                form.append(statusMessage);
+
+                const request = new XMLHttpRequest();
+
+                request.addEventListener('readystatechange', () => {
+                    statusMessage.textContent = loadMessage;
+                    console.log(request.status);
+
+                    if (request.readyState !== 4) {
+                        return;
+                    }
+
+                    if (request.status === 200) {
+                        statusMessage.textContent = successMessage;
+                    } else {
+                        statusMessage.textContent = errorMessage;
+                    } 
+                });
+
+                request.open('POST', './server.php');
+                request.setRequestHeader('Content-Type', 'application/JSON');
+
+                const formData = new FormData(form);
+
+                const InputData = form.querySelectorAll('input');
+
+                InputData.forEach(item => item.value = '');
+                
+                let body  = {};
+
+                // for (let val of formData.entries()) {
+                //     body[val[0]] = val[1];
+                // }
+
+                formData.forEach((val, key) => {
+                    body[key] = val;
+                });
+
+                request.send(JSON.stringify(body));
+            });
+        };
+
+
+    replaceField();
+    sendForm();
     calc();
     validCalc();
     switchImg();
