@@ -102,7 +102,7 @@ window.addEventListener('DOMContentLoaded', function() {
             colorCount;
 
         function popupAnimate() {
-            setTimeout(() => requestAnimationFrame(popupAnimate), 1000 / 28);
+            setTimeout(() => requestAnimationFrame(popupAnimate), 1000 / 200);
         
             count++;
             colorCount += 0.01;
@@ -149,7 +149,6 @@ window.addEventListener('DOMContentLoaded', function() {
                 
                 target = target.closest('.popup-content');
 
-                console.log(target);
 
                 if(!target) {
                     popup.style.display = 'none';
@@ -445,8 +444,6 @@ window.addEventListener('DOMContentLoaded', function() {
         };
 
         //send-ajax-form
-
-        //formValidator
         const getValidForm = (form) => {
             let validator = /^(\+7|8)(\d){10}$/;
             return validator.test(form);
@@ -456,89 +453,101 @@ window.addEventListener('DOMContentLoaded', function() {
             const messageField = document.querySelector('#form2-message');
             console.log(messageField);
             messageField.addEventListener('input', () => {
-                console.log(messageField);
-                messageField.value = messageField.value.replace(/\w/, '');
+                messageField.value = messageField.value.replace(/[^а-яА-Я ]/, '');
             });
         };
+        
+        const errorMessage = 'что-то пошло не так',
+            loadMessage = 'Загрузка...',
+            successMessage = 'Спасибо! Мы скоро с вами свяжемся!';
+        
+        let form;
+        
+        const statusMessage = document.createElement('div');
+        statusMessage.style.cssText = 'font-size: 2rem; color: white';
 
         const sendForm = () => {
-            const errorMessage = 'что-то пошло не так',
-                loadMessage = 'Загрузка...',
-                successMessage = 'Спасибо! Мы скоро с вами свяжемся!';
-
-            let form;
-
-            const statusMessage = document.createElement('div');
-            statusMessage.style.cssText = 'font-size: 2rem; color: white';
-
-
-            document.body.addEventListener('submit', (event) => {
-                event.preventDefault();
-                let target = event.target;
-                
-                if (target.matches('#form1')) {
-                    form = document.getElementById('form1');
-                } else if (target.matches('#form2')) {
-                    form = document.getElementById('form2');
-                } else if (target.matches('#form3')) {
-                    form = document.getElementById('form3');
-                } else {
-                    return;
-                }
-
-                const validForm = form.querySelector('.form-phone');
-                validForm.removeAttribute('style');
-
-                if (!getValidForm(validForm.value)) {
-                    validForm.setAttribute('style', 'border: 1px solid red');
-                    return;
-                }
-
-                form.append(statusMessage);
-
-                const request = new XMLHttpRequest();
-
-                request.addEventListener('readystatechange', () => {
+            
+            return new Promise ((resolve, reject) => {
+                            
                     statusMessage.textContent = loadMessage;
-                    console.log(request.status);
 
-                    if (request.readyState !== 4) {
+                    event.preventDefault();
+                    let target = event.target;
+                    if (target.matches('#form1')) {
+                        form = document.getElementById('form1');
+                    } else if (target.matches('#form2')) {
+                        form = document.getElementById('form2');
+                    } else if (target.matches('#form3')) {
+                        form = document.getElementById('form3');
+                    } else {
                         return;
                     }
 
-                    if (request.status === 200) {
-                        statusMessage.textContent = successMessage;
-                    } else {
-                        statusMessage.textContent = errorMessage;
-                    } 
-                });
+                    const validForm = form.querySelector('.form-phone');
+                    validForm.removeAttribute('style');
 
-                request.open('POST', './server.php');
-                request.setRequestHeader('Content-Type', 'application/JSON');
+                    if (!getValidForm(validForm.value)) {
+                        validForm.setAttribute('style', 'border: 1px solid red');
+                        return;
+                    }
 
-                const formData = new FormData(form);
+                    form.append(statusMessage);
 
-                const InputData = form.querySelectorAll('input');
+                    const request = new XMLHttpRequest();
 
-                InputData.forEach(item => item.value = '');
-                
-                let body  = {};
-
-                // for (let val of formData.entries()) {
-                //     body[val[0]] = val[1];
-                // }
-
-                formData.forEach((val, key) => {
-                    body[key] = val;
-                });
-
-                request.send(JSON.stringify(body));
+                    
+                    request.open('POST', './server.php');
+                    request.setRequestHeader('Content-Type', 'application/JSON');
+                    
+                    const formData = new FormData(form);
+                    
+                    const InputData = form.querySelectorAll('input');
+                    
+                    InputData.forEach(item => item.value = '');
+                    
+                    let body  = {};
+                    
+                    // for (let val of formData.entries()) {
+                        //     body[val[0]] = val[1];
+                        // }
+                        
+                    formData.forEach((val, key) => {
+                        body[key] = val;
+                    });
+                        
+                    request.addEventListener('readystatechange', () => {
+                        statusMessage.textContent = loadMessage;
+    
+                        if (request.readyState !== 4) {
+                            return;
+                        }
+    
+                        if (request.status === 200) {
+                            resolve();
+                        } else {
+                            reject(request.statusText);
+                        } 
+                    });
+                        request.send(JSON.stringify(body));
             });
         };
 
 
     replaceField();
-    sendForm();
+
+    document.body.addEventListener('submit', (event) => {
+        event.preventDefault();
+
+        sendForm()
+            .then(() => {
+                statusMessage.textContent = successMessage;
+            })
+            .catch((err) => {
+                statusMessage.textContent = errorMessage;
+                console.error(err);
+            });
+    });
     calc();
     validCalc();
     switchImg();
