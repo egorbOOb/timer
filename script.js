@@ -467,8 +467,8 @@ window.addEventListener('DOMContentLoaded', function() {
         statusMessage.style.cssText = 'font-size: 2rem; color: white';
 
         const sendForm = () => {
-            
-            return new Promise ((resolve, reject) => {
+            document.body.addEventListener('submit', (event) => {
+                event.preventDefault();
                             
                     statusMessage.textContent = loadMessage;
 
@@ -493,12 +493,6 @@ window.addEventListener('DOMContentLoaded', function() {
                     }
 
                     form.append(statusMessage);
-
-                    const request = new XMLHttpRequest();
-
-                    
-                    request.open('POST', './server.php');
-                    request.setRequestHeader('Content-Type', 'application/JSON');
                     
                     const formData = new FormData(form);
                     
@@ -515,39 +509,35 @@ window.addEventListener('DOMContentLoaded', function() {
                     formData.forEach((val, key) => {
                         body[key] = val;
                     });
-                        
-                    request.addEventListener('readystatechange', () => {
-                        statusMessage.textContent = loadMessage;
-    
-                        if (request.readyState !== 4) {
-                            return;
-                        }
-    
-                        if (request.status === 200) {
-                            resolve();
-                        } else {
-                            reject(request.statusText);
-                        } 
+
+                    postData(body)
+                        .then((response) => {
+                            if(response.status !== 200) {
+                                throw new Error('status network isn\'t 200');
+                            } 
+                            console.log(response);
+                            statusMessage.textContent = successMessage;
+                        })
+                        .catch((err) => {
+                            statusMessage.textContent = errorMessage;
+                            console.error(err);
+                        });
                     });
-                        request.send(JSON.stringify(body));
+        };
+
+        const postData = (body) => {
+            return fetch('./server.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(body)
             });
         };
 
 
     replaceField();
-
-    document.body.addEventListener('submit', (event) => {
-        event.preventDefault();
-
-        sendForm()
-            .then(() => {
-                statusMessage.textContent = successMessage;
-            })
-            .catch((err) => {
-                statusMessage.textContent = errorMessage;
-                console.error(err);
-            });
-    });
+    sendForm();
     calc();
     validCalc();
     switchImg();
