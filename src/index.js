@@ -7,7 +7,7 @@ import elementClosest from 'element-closest';
 elementClosest(window);
 import 'formdata-polyfill';
 import 'fetch-polyfill';
-var Promise = require('es6-promise').Promise;
+import 'es6-promise';
 
 
 
@@ -24,7 +24,7 @@ import calc from './modules/calc';
 import sendForm from './modules/sendForm';
 
 //Timer V
-countTimer('19 july 2020');
+countTimer('20 july 2020');
 
 // Меню V
 toggleMenu();

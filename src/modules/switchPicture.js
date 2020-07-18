@@ -6,9 +6,7 @@ const switchPicture = () => {
         let target = e.target;
         
         if (target.matches('.command__photo')) {
-            console.log(target.getAttribute('src'));
             target.src = defaultSrc;
-            console.log(target.src);
         }
     };
     
@@ -18,7 +16,6 @@ const switchPicture = () => {
         if (target.matches('.command__photo')) {
             defaultSrc = target.src;
             target.src = target.dataset.img;
-            console.log(target.src);
         }
     };
 

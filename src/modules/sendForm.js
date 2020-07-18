@@ -7,7 +7,6 @@ const sendForm = () => {
 
     const replaceField = () => {
         const messageField = document.querySelector('#form2-message');
-        console.log(messageField);
         messageField.addEventListener('input', () => {
             messageField.value = messageField.value.replace(/[^а-яА-Я ]/, '');
         });
@@ -22,7 +21,7 @@ const sendForm = () => {
     const statusMessage = document.createElement('div');
     statusMessage.style.cssText = 'font-size: 2rem; color: white';
 
-    const sendForm = () => {
+    const send = () => {
         document.body.addEventListener('submit', (event) => {
             event.preventDefault();
                         
@@ -70,9 +69,8 @@ const sendForm = () => {
                 postData(body)
                     .then((response) => {
                         if(response.status !== 200) {
-                            throw new Error('status network isn\'t 200');
+                            throw new Error('status network not 200');
                         } 
-                        console.log(response);
                         statusMessage.textContent = successMessage;
                     })
                     .catch((err) => {
@@ -91,8 +89,9 @@ const sendForm = () => {
             body: JSON.stringify(body)
         });
     };
+    
     replaceField();
-    sendForm();
+    send();
 };
 
 export default sendForm;

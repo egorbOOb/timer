@@ -37,7 +37,6 @@ document.querySelector('img[src="images/scroll.svg"]').addEventListener('click',
 });
 
 menuItems[0].addEventListener('click', function() {
-    console.log(this);
     getScrollPosition(service);
 });
 
