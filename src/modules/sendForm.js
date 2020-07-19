@@ -7,6 +7,19 @@ const sendForm = () => {
 
     const replaceField = () => {
         const messageField = document.querySelector('#form2-message');
+            // userNameField = document.querySelectorAll('.form-name');
+        document.body.addEventListener('input', (event) => {
+            let target = event.target;
+
+            if (target.matches('.form-name')) {
+                target.value = target.value.replace(/[^а-яА-Я ]/, '');
+            } else if (target.matches('#form2-name')) {
+                target.value = target.value.replace(/[^а-яА-Я ]/, '');
+            } else {
+                return;
+            }
+        });
+
         messageField.addEventListener('input', () => {
             messageField.value = messageField.value.replace(/[^а-яА-Я ]/, '');
         });
@@ -81,7 +94,7 @@ const sendForm = () => {
     };
 
     const postData = (body) => {
-        return fetch('./server.php', {
+        return fetch('././server.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
