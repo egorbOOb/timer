@@ -12,16 +12,16 @@ const sendForm = () => {
             let target = event.target;
 
             if (target.matches('.form-name')) {
-                target.value = target.value.replace(/[^а-яА-Я ]/, '');
+                target.value = target.value.replace(/[^а-яА-Я ]/, '').trim();
             } else if (target.matches('#form2-name')) {
-                target.value = target.value.replace(/[^а-яА-Я ]/, '');
+                target.value = target.value.replace(/[^а-яА-Я ]/, '').trim();
             } else {
                 return;
             }
         });
 
         messageField.addEventListener('input', () => {
-            messageField.value = messageField.value.replace(/[^а-яА-Я ]/, '');
+            messageField.value = messageField.value.replace(/[^а-яА-Я ]/, '').trim();
         });
     };
     
