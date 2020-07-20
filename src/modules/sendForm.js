@@ -12,16 +12,28 @@ const sendForm = () => {
             let target = event.target;
 
             if (target.matches('.form-name')) {
-                target.value = target.value.replace(/[^а-яА-Я ]/, '').trim();
+                target.value = target.value.replace(/[^а-яА-Я ]/, '');
             } else if (target.matches('#form2-name')) {
-                target.value = target.value.replace(/[^а-яА-Я ]/, '').trim();
+                target.value = target.value.replace(/[^а-яА-Я ]/, '');
+            } else {
+                return;
+            }
+        });
+
+        document.body.addEventListener('change', (event) => {
+            let target = event.target;
+
+            if (target.matches('.form-name')) {
+                target.value = target.value.replace(/[^а-яА-Я ]/, '');
+            } else if (target.matches('#form2-name')) {
+                target.value = target.value.replace(/[^а-яА-Я ]/, '');
             } else {
                 return;
             }
         });
 
         messageField.addEventListener('input', () => {
-            messageField.value = messageField.value.replace(/[^а-яА-Я ]/, '').trim();
+            messageField.value = messageField.value.replace(/[^а-яА-Я ]/, '');
         });
     };
     
@@ -76,7 +88,7 @@ const sendForm = () => {
                     // }
                     
                 formData.forEach((val, key) => {
-                    body[key] = val;
+                    body[key] = val.trim();
                 });
 
                 postData(body)
